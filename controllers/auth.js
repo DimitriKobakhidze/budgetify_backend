@@ -1,8 +1,8 @@
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const Card = require("../models/card");
 const PiggyBank = require("../models/piggyBank");
+const bcrypt = require("bcryptjs");
 
 exports.login = (req, res) => {
   const { email, password } = req.body;
