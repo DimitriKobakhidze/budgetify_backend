@@ -1,3 +1,5 @@
+const Card = require("../models/card");
+
 exports.getCardById = (cardsArray, cardId) => {
   const selectedCard = cardsArray.find(
     (card) => card._id.toString() === cardId
@@ -38,4 +40,20 @@ exports.sortArrayByIncome = (items, sortingBy) => {
 
 exports.genericErrorMsg = {
   msg: "An error occurred while processing your request.",
+};
+
+exports.adjustCardBalance = (cardId, userId, isIncome, amount) => {
+  return Card.findOne({ _id: cardId, userId: userId }).then(async (c) => {
+    if (!isIncome && c.amount < amount) return false;
+
+    if (isIncome) {
+      c.amount = c.amount + Number(amount);
+    } else {
+      c.amount -= amount;
+    }
+
+    await c.save();
+
+    return true;
+  });
 };

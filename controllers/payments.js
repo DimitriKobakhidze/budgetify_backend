@@ -1,7 +1,7 @@
 const Transaction = require("../models/transaction");
 const Subscription = require("../models/subscription");
 const Obligatory = require("../models/obligatory");
-const { genericErrorMsg } = require("../utils/utils");
+const { genericErrorMsg, adjustCardBalance } = require("../utils/utils");
 const { ObjectId } = require("mongodb");
 
 const paymentModels = {
@@ -47,7 +47,17 @@ exports.addPayment = async (req, res) => {
   try {
     const { cardId, paymentType } = req.params;
     const { paymentData } = req.body;
-    console.log(paymentData);
+
+    if (
+      !(await adjustCardBalance(
+        cardId,
+        req.user._id,
+        paymentData.isIncome,
+        paymentData.amount
+      ))
+    ) {
+      return res.status(400).send({ msg: "Insufficient funds" });
+    }
 
     const payment = new paymentModels[paymentType]({
       ...paymentData,
