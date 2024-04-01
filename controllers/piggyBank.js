@@ -1,6 +1,6 @@
 const PiggyBank = require("../models/piggyBank");
 const Card = require("../models/card");
-const { genericErrorMsg } = require("../utils/utils");
+const { genericErrorMsg, adjustCardBalance } = require("../utils/utils");
 
 exports.piggyBanks = (req, res) => {
   const { cardId } = req.params;
@@ -67,6 +67,17 @@ exports.editPiggyBank = async (req, res) => {
 
 exports.addToPiggyBank = async (req, res) => {
   const { data } = req.body;
+
+  if (
+    !(await adjustCardBalance(
+      data.cardId,
+      req.user._id,
+      false,
+      data.savedAmount
+    ))
+  ) {
+    return res.status(400).send({ msg: "Insufficient funds" });
+  }
 
   PiggyBank.findOneAndUpdate(
     {
