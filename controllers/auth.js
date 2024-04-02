@@ -3,6 +3,7 @@ const User = require("../models/user");
 const Card = require("../models/card");
 const PiggyBank = require("../models/piggyBank");
 const bcrypt = require("bcryptjs");
+const { genericErrorMsg } = require("../utils/utils");
 
 exports.login = (req, res) => {
   const { email, password } = req.body;
@@ -45,6 +46,25 @@ exports.login = (req, res) => {
       console.error(err);
       res.status(500).send({ msg: "An error occurred while logging in." });
     });
+};
+
+exports.register = async (req, res) => {
+  const userData = req.body.userData;
+  const { email, password, firstName, lastName } = userData;
+
+  try {
+    const newUser = new User({
+      email,
+      password,
+      fullName: `${firstName} ${lastName}`,
+    });
+    await newUser.validate();
+    await newUser.save();
+
+    return res.status(200).send({ msg: "Succesfully registered" });
+  } catch (err) {
+    return res.status(400).send(genericErrorMsg);
+  }
 };
 
 exports.logout = (req, res) => {

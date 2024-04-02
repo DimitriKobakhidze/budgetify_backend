@@ -11,6 +11,18 @@ const loginValidation = [
   body("password", "Invalid password").isLength({ min: 5 }).escape().trim(),
 ];
 
+const registerValidation = [
+  body("userData.email", "Invalid email").isEmail().escape().normalizeEmail(),
+  body("userData.password", "Invalid password")
+    .isString()
+    .isLength({ min: 5 })
+    .escape()
+    .trim(),
+  body("userData.firstName", "Invalid name").isString(),
+  body("userData.lastName", "Invalid lastname").isString(),
+  checkExact(),
+];
+
 const validateDateField = (value) => {
   if (typeof value === "string") {
     return true;
@@ -176,4 +188,5 @@ module.exports = {
   editCardValidation,
   addCardValidation,
   deleteCardValidation,
+  registerValidation,
 };
