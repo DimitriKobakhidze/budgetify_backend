@@ -49,13 +49,13 @@ exports.login = (req, res) => {
 };
 
 exports.register = async (req, res) => {
-  const userData = req.body.userData;
-  const { email, password, firstName, lastName } = userData;
+  const { email, password, firstName, lastName } = req.body;
 
+  const hashedPassword = await bcrypt.hash(password, 10);
   try {
     const newUser = new User({
       email,
-      password,
+      password: hashedPassword,
       fullName: `${firstName} ${lastName}`,
     });
     await newUser.validate();

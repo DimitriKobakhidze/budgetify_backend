@@ -12,14 +12,14 @@ const loginValidation = [
 ];
 
 const registerValidation = [
-  body("userData.email", "Invalid email").isEmail().escape().normalizeEmail(),
-  body("userData.password", "Invalid password")
+  body("email", "Invalid email").isEmail().escape().normalizeEmail(),
+  body("password", "Invalid password")
     .isString()
     .isLength({ min: 5 })
     .escape()
     .trim(),
-  body("userData.firstName", "Invalid name").isString(),
-  body("userData.lastName", "Invalid lastname").isString(),
+  body("firstName", "Invalid name").isString(),
+  body("lastName", "Invalid lastname").isString(),
   checkExact(),
 ];
 
